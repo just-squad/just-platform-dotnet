@@ -1,0 +1,1 @@
+# justsquad-platform-dotnet
