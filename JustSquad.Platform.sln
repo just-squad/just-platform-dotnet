@@ -1,0 +1,35 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0BA883B5-36CE-459D-9507-C3AF24DE7739}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustSquad.Platform.Migrations", "src\JustSquad.Platform.Migrations\JustSquad.Platform.Migrations.csproj", "{2508E91C-E506-4DC3-88ED-B2ECB4E0D011}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{4B06B7AA-E960-4118-BEBD-A6552552A40E}"
+	ProjectSection(SolutionItems) = preProject
+		Directory.Build.props = Directory.Build.props
+		Directory.Build.targets = Directory.Build.targets
+		LICENSE = LICENSE
+		README.md = README.md
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2508E91C-E506-4DC3-88ED-B2ECB4E0D011}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2508E91C-E506-4DC3-88ED-B2ECB4E0D011}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2508E91C-E506-4DC3-88ED-B2ECB4E0D011}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2508E91C-E506-4DC3-88ED-B2ECB4E0D011}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2508E91C-E506-4DC3-88ED-B2ECB4E0D011} = {0BA883B5-36CE-459D-9507-C3AF24DE7739}
+	EndGlobalSection
+EndGlobal
