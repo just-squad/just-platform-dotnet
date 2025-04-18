@@ -53,5 +53,3 @@ dotnet add package JustPlatform.Core
 [GitHub Discussions](https://github.com/just-squad/just-platform-dotnet/discussions) • [Telegram](https://t.me/bald_man_g) • [Примеры](https://github.com/just-squad/just-platform-dotnet/blob/main/examples)
 
 </div>
-
-Пример успешного README: [ASP.NET Core](https://github.com/dotnet/aspnetcore) или [MediatR](https://github.com/jbogard/MediatR).
