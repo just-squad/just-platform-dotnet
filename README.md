@@ -43,14 +43,14 @@ dotnet add package JustPlatform.Core
 ---
 
 ### 📜 **Лицензия**
-Проект доступен под лицензией MIT — подробности в [LICENSE](LICENSE).
+Проект доступен под лицензией Apache2.0 — подробности в [LICENSE](LICENSE).
 
 ---
 
 <div align="center">
   
 **Присоединяйтесь к нам!**  
-[GitHub Discussions](https://github.com/just-squad/just-platform-dotnet/discussions) • [Discord](https://t.me/bald_man_g) • [Примеры](https://github.com/just-squad/just-platform-dotnet/examples)
+[GitHub Discussions](https://github.com/just-squad/just-platform-dotnet/discussions) • [Telegram](https://t.me/bald_man_g) • [Примеры](https://github.com/just-squad/just-platform-dotnet/blob/main/examples)
 
 </div>
 
