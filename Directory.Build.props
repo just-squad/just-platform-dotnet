@@ -5,5 +5,9 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
     
+    <PropertyGroup>
+        <LocalNugetFolder Condition=" '$(OS)' != 'Windows_NT' ">$(HOME)/local-nuget/$(SolutionName)</LocalNugetFolder>
+        <LocalNugetFolder Condition=" '$(OS)' == 'Windows_NT' ">C:\LocalNugetStore\$(SolutionName)</LocalNugetFolder>
+    </PropertyGroup>
     
 </Project>

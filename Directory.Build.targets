@@ -1,2 +1,24 @@
 <Project>
+    <Target Name="PutLocalPackageInStore" AfterTargets="Pack" Condition="'$(Configuration)'=='DebugNugetPackages' and $(IsPackable)">
+        <Message Importance="high" Text="Start create local nuget package"/>
+        
+        <PropertyGroup>
+            <NugetPackageRoot Condition=" '$(NugetPackageRoot)' == '' ">$(UserProfile)\.nuget\packages</NugetPackageRoot>
+            <NugetDeletedProjectInCache>$(NugetPackageRoot)$(ProjectName)\$(NugetPackageVersion)</NugetDeletedProjectInCache>
+            <NugetSourceFolder>$(MsBuildProjectDirectory)\bin\$(Configuration)</NugetSourceFolder>
+            <NugetSourceFile>$(NugetSourceFolder)\$(ProjectName).$(Version).nupkg</NugetSourceFile>
+        </PropertyGroup>
+
+        <Message Importance="high" Condition="Exists('$(NugetDeletedProjectInCache)')" Text="$(NugetDeletedProjectInCache) was deleted from local cache"/>
+        <Message Importance="high" Condition="!Exists('$(NugetDeletedProjectInCache)')" Text="$(NugetDeletedProjectInCache) doesn't exist in local cache"/>
+
+        <RemoveDir Condition="Exists('$(NugetDeletedProjectInCache)')" ContinueOnError="false" Directories="$(NugetDeletedProjectInCache)"/>
+        <Message Condition="Exists('$(NugetDeletedProjectInCache)')" Importance="high" Text="Local cache was cleared"/>
+
+        <Move SourceFiles="$(NugetSourceFile)" DestinationFolder="$(LocalNugetFolder)"/>
+
+        <Message Importance="high" Condition="Exists('$(LocalNugetFolder)\$(ProjectName).$(Version).nupkg')" Text="$(LocalNugetFolder) was updated"/>
+        <Message Importance="high" Condition="!Exists('$(LocalNugetFolder)\$(ProjectName).$(Version).nupkg')" Text="$(LocalNugetFolder)\$(ProjectName).$(Version).nupkg doesn't exist"/>
+
+    </Target>
 </Project>
