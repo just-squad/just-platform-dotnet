@@ -16,8 +16,8 @@ public static class ServiceCollectionExtensions
         using var loggerFactory = LoggerFactory.Create(loggingBuilder => loggingBuilder.AddConsole());
         ILogger logger = loggerFactory.CreateLogger("AddJustPlatformVaultConfiguration");
 
-        var platformVaultOptionsSection = configuration.GetSection(PlatformVaultOptions.SectionName);
-        var platformVaultOptionsValue = platformVaultOptionsSection.Get<PlatformVaultOptions>();
+        var platformVaultOptionsValue = configuration.GetSection(PlatformVaultOptions.SectionName)
+                                .Get<PlatformVaultOptions>() ?? new PlatformVaultOptions();
         if (platformVaultOptionsValue is null)
         {
             logger.LogInformation("Configuration for Vault connection is not provided. Vault is disabled.");
@@ -44,9 +44,14 @@ public static class ServiceCollectionExtensions
             return services;
         }
 
-        services.Configure<PlatformVaultOptions>(
-            configuration.GetSection(PlatformVaultOptions.SectionName));
-        
+        services.Configure<PlatformVaultOptions>(configuration.GetSection(PlatformVaultOptions.SectionName));
+
+        // Добавляем mutable provider
+        var refreshInterval = TimeSpan.FromSeconds(platformVaultOptionsValue.RefreshIntervalSeconds);
+        var provider = new MutableConfigurationProvider(refreshInterval);
+        services.AddSingleton<IConfigurationProvider>(provider);
+        services.AddSingleton(provider); // Для использования в RemoteConfigurationService
+
         services.AddHttpClient<IVaultProvider, VaultHttpProvider>((provider, client) =>
         {
             var options = provider.GetRequiredService<IOptions<PlatformVaultOptions>>().Value;

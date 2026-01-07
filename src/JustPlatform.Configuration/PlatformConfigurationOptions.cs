@@ -8,5 +8,6 @@ public class PlatformVaultOptions
     public string? VaultUrl { get; init; }
     public string? VaultToken { get; init; }
     public string? VaultPath { get; init; } = string.Empty;
+    public bool UseKvV2 { get; set; } = true;
     public int RefreshIntervalSeconds { get; init; } = 30;
 }

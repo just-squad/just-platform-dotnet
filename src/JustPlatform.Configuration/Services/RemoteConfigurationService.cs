@@ -1,3 +1,4 @@
+using JustPlatform.Configuration.Models;
 using JustPlatform.Configuration.Providers;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
@@ -7,21 +8,21 @@ namespace JustPlatform.Configuration.Services;
 
 public class RemoteConfigurationService : IRemoteConfigurationService, IDisposable
 {
-    private readonly IConfiguration _configuration;
+    private readonly MutableConfigurationProvider _provider;
     private readonly IOptionsMonitor<PlatformVaultOptions> _options;
     private readonly IVaultProvider _vaultProvider;
     private readonly ILogger<RemoteConfigurationService> _logger;
     private Timer? _timer;
 
     public RemoteConfigurationService(
-        IConfiguration configuration,
+        MutableConfigurationProvider provider,
         IOptionsMonitor<PlatformVaultOptions> options,
-        IVaultProvider vaultClient,
+        IVaultProvider vaultProvider,
         ILogger<RemoteConfigurationService> logger)
     {
-        _configuration = configuration;
+        _provider = provider;
         _options = options;
-        _vaultProvider = vaultClient;
+        _vaultProvider = vaultProvider;
         _logger = logger;
     }
 
@@ -35,27 +36,47 @@ public class RemoteConfigurationService : IRemoteConfigurationService, IDisposab
     public async Task ReloadAsync(CancellationToken cancellationToken = default)
     {
         var opts = _options.CurrentValue;
-        if (!opts.IsEnabled || string.IsNullOrEmpty(opts.VaultUrl) || string.IsNullOrEmpty(opts.VaultToken))
+        if (!opts.IsEnabled || string.IsNullOrWhiteSpace(opts.VaultUrl) || string.IsNullOrWhiteSpace(opts.VaultToken))
         {
             _logger.LogDebug("Vault configuration is disabled or credentials are missing.");
             return;
         }
 
+        if (string.IsNullOrWhiteSpace(opts.VaultPath))
+        {
+            _logger.LogDebug("Vault path is missing when Vault connection is enabled. Skip process.");
+            return;
+        }
+
         try
         {
-            var secrets = await _vaultProvider.GetSecretV1Async(opts.VaultPath, cancellationToken);
-
-            if (secrets?.Data?.Data != null)
+            var newData = new Dictionary<string, string?>();
+            if (opts.UseKvV2)
             {
-                foreach (var secret in secrets.Data.Data)
+                var secretsV2 = await _vaultProvider.GetSecretV2Async(opts.VaultPath, cancellationToken);
+                if (secretsV2 is not null)
                 {
-                    var key = secret.Key;
-                    var value = secret.Value?.ToString();
-                    (_configuration as IConfigurationRoot)?.GetReloadToken()?.RegisterChangeCallback(_ => { }, null);
-                    // В .NET 8 можно использовать MutableConfiguration
-                    // Пока просто логируем
-                    _logger.LogInformation("Loaded secret: {Key} = {Value}", key, value);
+                    foreach (var secret in secretsV2.Data.Data)
+                    {
+                        newData[$"Vault:{secret.Key}"] = secret.Value?.ToString();
+                    }
                 }
+            }
+            else
+            {
+                var secretsV1 = await _vaultProvider.GetSecretV1Async(opts.VaultPath, cancellationToken);
+                if (secretsV1 is not null)
+                {
+                    foreach (var secret in secretsV1.Data.Data)
+                    {
+                        newData[$"Vault:{secret.Key}"] = secret.Value?.ToString();
+                    }
+                }
+            }
+            if (newData.Count > 0)
+            {
+                await _provider.UpdateDataAsync(newData);
+                _logger.LogInformation("Remote configuration reloaded from Vault.");
             }
         }
         catch (Exception ex)
@@ -64,5 +85,9 @@ public class RemoteConfigurationService : IRemoteConfigurationService, IDisposab
         }
     }
 
-    public void Dispose() => _timer?.Dispose();
+    public void Dispose()
+    {
+        _timer?.Dispose();
+        _provider?.Dispose();
+    }
 }
