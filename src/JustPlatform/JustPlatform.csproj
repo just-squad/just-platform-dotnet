@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <IsPackable>true</IsPackable>
+    <Configurations>Debug;Release;DebugNugetPackages</Configurations>
+    <Platforms>AnyCPU</Platforms>
+  </PropertyGroup>
+
+</Project>

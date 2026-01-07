@@ -18,8 +18,11 @@ public static class DictionaryExtensions
         where TKey : notnull
     {
         ArgumentNullException.ThrowIfNull(dictionary);
-        ref var slot = ref CollectionsMarshal.GetValueRefOrAddDefault(dictionary, key, out bool exists);
-        if (exists) return slot!;
+        ref var slot = ref CollectionsMarshal.GetValueRefOrAddDefault(dictionary, key, out var exists);
+        if (exists)
+        {
+            return slot!;
+        }
 
         slot = value;
         return value;
@@ -39,7 +42,10 @@ public static class DictionaryExtensions
     {
         ArgumentNullException.ThrowIfNull(dictionary);
         ref var slot = ref CollectionsMarshal.GetValueRefOrNullRef(dictionary, key);
-        if (Unsafe.IsNullRef(ref slot)) return false;
+        if (Unsafe.IsNullRef(ref slot))
+        {
+            return false;
+        }
 
         slot = value;
         return true;
@@ -61,7 +67,10 @@ public static class DictionaryExtensions
         ref var slot = ref CollectionsMarshal.GetValueRefOrNullRef(dictionary, key);
 
         // Если ссылка не является null, значит ключ существует
-        if (Unsafe.IsNullRef(ref slot)) return false; // Ключ не существует, ничего не делаем
+        if (Unsafe.IsNullRef(ref slot))
+        {
+            return false; // Ключ не существует, ничего не делаем
+        }
 
         dictionary.Remove(key); // Удаляем ключ
         return true; // Возвращаем true, так как ключ был удален

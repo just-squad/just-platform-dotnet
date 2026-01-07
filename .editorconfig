@@ -1,0 +1,145 @@
+# Универсальные настройки для всего решения Acme.Platform
+root = true
+
+# Общие настройки для всех файлов
+[*.]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Настройки для C# файлов
+[*.cs]
+# Отступы
+indent_style = space
+indent_size = 4
+
+# Объявления
+csharp_style_var_for_built_in_types = true:warning
+csharp_style_var_when_type_is_apparent = true:warning
+
+# Использование неявных типов (var)
+csharp_style_implicit_object_creation = true:warning
+csharp_style_inlined_variable_declaration = true:warning
+
+# Использование выражений-свойств
+csharp_style_expression_bodied_methods = true:warning
+csharp_style_expression_bodied_constructors = false:warning
+csharp_style_expression_bodied_operators = true:warning
+csharp_style_expression_bodied_properties = true:warning
+csharp_style_expression_bodied_indexers = true:warning
+csharp_style_expression_bodied_accessors = true:warning
+
+# Предпочитать "is null" вместо "== null"
+csharp_style_pattern_matching_over_as_with_null_check = true:warning
+csharp_style_pattern_matching_over_is_with_cast_check = true:warning
+
+# Использование скобок
+csharp_prefer_braces = true:warning
+
+# Использование "throw expressions"
+csharp_style_throw_expression = true:warning
+
+# Предпочитать "out var" вместо "out"
+csharp_style_deconstructed_variable_declaration = true:warning
+
+# Использование "using declarations"
+csharp_prefer_simple_using_statement = true:warning
+
+# Использование "tuple" с именованными элементами
+csharp_style_prefer_inferred_tuple_names = true:warning
+
+# Использование "coalesce expressions"
+csharp_style_conditional_delegate_call = true:warning
+
+# Порядок модификаторов
+csharp_preferred_modifier_order = public, private, protected, internal, static, extern, new, virtual, abstract, sealed, override, readonly, unsafe, volatile, async:warning
+
+# Использование "file-scoped namespaces"
+csharp_prefer_file_scoped_namespaces = true:warning
+
+# Порядок членов в типе
+csharp_preferred_modifier_order = public, private, protected, internal, static, extern, new, virtual, abstract, sealed, override, readonly, unsafe, volatile, async:warning
+
+# Использование "primary constructors"
+csharp_style_primary_constructors = true:warning
+
+# Использование "record structs"
+csharp_style_prefer_structs_to_classes = false:warning
+
+# Порядок членов (public, internal, private и т.д.)
+csharp_prefer_static_readonly = true:warning
+
+# Использование "pattern-based using"
+csharp_style_using_directive_placement = outside_namespace:warning
+
+# Использование "nullable reference types"
+dotnet_diagnostic.CS8600.severity = warning
+dotnet_diagnostic.CS8602.severity = warning
+dotnet_diagnostic.CS8603.severity = warning
+dotnet_diagnostic.CS8625.severity = warning
+dotnet_diagnostic.CS8618.severity = warning
+
+# Nullable
+dotnet_enable_nullable = enable
+
+# Дополнительные правила
+dotnet_style_collection_initialization = true:warning
+dotnet_style_coalesce_expression = true:warning
+dotnet_style_null_propagation = true:warning
+dotnet_style_explicitly_typed_interpolated_string = false:warning
+dotnet_style_prefer_compound_assignment = true:warning
+dotnet_style_prefer_simplified_boolean_expressions = true:warning
+dotnet_style_prefer_is_null_check_over_reference_equality_method = true:warning
+dotnet_style_prefer_inlined_variable_declaration = true:warning
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning
+dotnet_style_readonly_field = true:warning
+dotnet_style_prefer_auto_properties = true:suggestion
+dotnet_style_prefer_conditional_expression_over_assignment = true:warning
+dotnet_style_prefer_conditional_expression_over_return = true:warning
+dotnet_style_prefer_inferred_anonymous_type_member_names = true:warning
+dotnet_style_prefer_inferred_tuple_element_names = true:warning
+dotnet_style_prefer_is_operator_over_as_with_null_check = true:warning
+dotnet_style_prefer_index_operator = true:warning
+dotnet_style_prefer_range_operator = true:warning
+dotnet_style_prefer_simplified_interpolation = true:warning
+dotnet_style_prefer_simplified_logical_expressions = true:warning
+dotnet_style_prefer_static_local_function = true:warning
+dotnet_style_prefer_switch_expression = true:warning
+dotnet_style_prefer_target_typed_new_expression = true:warning
+dotnet_style_prefer_throw_expression = true:warning
+dotnet_style_prefer_property_pattern = true:warning
+dotnet_style_prefer_extended_property_pattern = true:warning
+dotnet_style_prefer_conditional_delegate_call = true:warning
+dotnet_style_prefer_group_fallback_property_pattern = true:warning
+dotnet_style_prefer_extended_exact_nullable_annotation = true:warning
+dotnet_style_prefer_exact_nullable_annotation = true:warning
+dotnet_style_prefer_nullable_context = true:warning
+
+# Правила именования
+[*.cs]
+# Public members
+dotnet_naming_rule.public_members_must_be_capitalized.severity = warning
+dotnet_naming_rule.public_members_must_be_capitalized.symbols = public_members
+dotnet_naming_rule.public_members_must_be_capitalized.style = capitalized_style
+
+# Private members
+dotnet_naming_rule.private_members_must_be_underscore_prefixed.severity = suggestion
+dotnet_naming_rule.private_members_must_be_underscore_prefixed.symbols = private_members
+dotnet_naming_rule.private_members_must_be_underscore_prefixed.style = underscore_prefixed_style
+
+# Symbols
+dotnet_naming_symbols.public_members.applicable_kinds = method, property, event, field, enum_member, constant, readonly_field
+dotnet_naming_symbols.public_members.applicable_accessibilities = public, internal, protected, protected_internal, private_protected
+
+dotnet_naming_symbols.private_members.applicable_kinds = field, parameter
+dotnet_naming_symbols.private_members.applicable_accessibilities = private
+
+# Styles
+dotnet_naming_style.capitalized_style.capitalization = pascal_case
+dotnet_naming_style.underscore_prefixed_style.capitalization = camel_case
+dotnet_naming_style.underscore_prefixed_style.required_prefix = _
+
+# Игнорировать файлы автогенерации
+[**/*.g.cs]
+indent_size = -1
