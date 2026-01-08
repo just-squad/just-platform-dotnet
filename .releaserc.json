@@ -1,0 +1,18 @@
+{
+  "branches": ["main"],
+  "plugins": [
+    [
+      "@semantic-release/github",
+      {
+        "assets": ["**/*.nupkg"],
+        "releasedLabels": ["Status: Released"]
+      }
+    ],
+    [
+      "@semantic-release/exec",
+      {
+        "prepareCmd": "sed -i 's/<Version>.*<\\/Version>/<Version>${nextRelease.version}<\\/Version>/' Directory.Build.props"
+      }
+    ]
+  ]
+}
