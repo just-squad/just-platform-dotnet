@@ -1,12 +1,12 @@
 namespace JustPlatform.Domain;
 
 public abstract class Entity<TId>
-    where TId: IEquatable<TId>
+    where TId : IEquatable<TId>
 {
-    int? _requestedHashCode;
+    private int? _requestedHashCode;
     public virtual TId Id { get; protected set; }
 
-    private List<INotification> _domainEvents;
+    private List<INotification> _domainEvents = new();
     public IReadOnlyCollection<INotification> DomainEvents => _domainEvents.AsReadOnly();
 
     public void AddDomainEvent(INotification eventItem)
@@ -15,32 +15,32 @@ public abstract class Entity<TId>
         _domainEvents.Add(eventItem);
     }
 
-    public void RemoveDomainEvent(INotification eventItem)
-    {
-        _domainEvents.Remove(eventItem);
-    }
+    public void RemoveDomainEvent(INotification eventItem) => _domainEvents.Remove(eventItem);
 
-    public void ClearDomainEvents()
-    {
-        _domainEvents.Clear();
-    }
+    public void ClearDomainEvents() => _domainEvents.Clear();
 
     public bool IsTransient() => this.Id.Equals(default);
 
     public override bool Equals(object? obj)
     {
         if (obj is not Entity<TId> item)
+        {
             return false;
+        }
 
         if (ReferenceEquals(this, item))
+        {
             return true;
+        }
 
         if (GetType() != item.GetType())
+        {
             return false;
+        }
 
-        if (item.IsTransient() || IsTransient())
-            return false;
-        return item.Id.Equals(Id);
+        return item.IsTransient() || IsTransient() 
+                ? false 
+                : item.Id.Equals(Id);
     }
 
     public override int GetHashCode()
@@ -48,7 +48,9 @@ public abstract class Entity<TId>
         if (!IsTransient())
         {
             if (!_requestedHashCode.HasValue)
+            {
                 _requestedHashCode = this.Id.GetHashCode() ^ 31; // XOR for random distribution (http://blogs.msdn.com/b/ericlippert/archive/2011/02/28/guidelines-and-rules-for-gethashcode.aspx)
+            }
 
             return _requestedHashCode.Value;
         }
@@ -57,13 +59,8 @@ public abstract class Entity<TId>
     }
     public static bool operator ==(Entity<TId> left, Entity<TId> right)
     {
-        if (Object.Equals(left, null))
-            return (Object.Equals(right, null)) ? true : false;
-        return left.Equals(right);
+        return Object.Equals(left, null) ? Object.Equals(right, null) : left.Equals(right);
     }
 
-    public static bool operator !=(Entity<TId> left, Entity<TId> right)
-    {
-        return !(left == right);
-    }
+    public static bool operator !=(Entity<TId> left, Entity<TId> right) => !(left == right);
 }
