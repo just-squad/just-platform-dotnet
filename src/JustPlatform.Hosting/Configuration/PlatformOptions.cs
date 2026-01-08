@@ -4,6 +4,8 @@ namespace JustPlatform.Hosting.Configuration;
 
 public class PlatformOptions
 {
+    public const string SectionName = "PlatformOptions";
+
     public bool EnableHealthChecks { get; init; } = true;
     public bool EnableMetrics { get; init; } = true;
     public bool EnableSerilog { get; init; } = true;

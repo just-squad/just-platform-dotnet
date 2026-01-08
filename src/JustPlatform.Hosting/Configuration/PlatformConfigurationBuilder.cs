@@ -6,7 +6,6 @@ public static class PlatformConfigurationBuilder
 {
     public static IConfigurationBuilder AddJustPlatformConfigurationSources(
         this IConfigurationBuilder builder,
-        PlatformOptions options,
         string? environmentName = null)
     {
         // 1. appsettings.json

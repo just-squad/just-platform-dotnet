@@ -32,10 +32,19 @@ public static class ServiceCollectionExtensions
             Action<PlatformOptions>? configureOptions = null)
     {
         var options = new PlatformOptions();
+        // 1. Строим конфигурацию
+        var cfgBuilder = configurationManager.AddJustPlatformConfigurationSources(webHostEnvironment.EnvironmentName);
+        var cfg = cfgBuilder.Build();
+        var optionsFromCfg = cfg.GetSection(PlatformOptions.SectionName).Get<PlatformOptions>();
+        if(optionsFromCfg is not null)
+        {
+            options = optionsFromCfg;
+        }
+        
+        // 2. Если пользователь задал переменные явно, то нужно переписать значения
         configureOptions?.Invoke(options);
 
-        // 1. Строим конфигурацию
-        configurationManager.AddJustPlatformConfigurationSources(options, webHostEnvironment.EnvironmentName);
+        
         // 3. Vault/OpenBao (опционально, если включено)
         if (options.VaultOptions.IsEnabled)
         {
