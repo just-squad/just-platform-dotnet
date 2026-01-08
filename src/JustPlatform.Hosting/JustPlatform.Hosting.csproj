@@ -3,7 +3,6 @@
   <PropertyGroup>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <IsPackable>true</IsPackable>
-    <Version>0.0.1</Version>
     <Configurations>Debug;Release;DebugNugetPackages</Configurations>
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>

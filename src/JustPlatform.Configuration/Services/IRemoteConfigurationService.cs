@@ -2,6 +2,6 @@ namespace JustPlatform.Configuration.Services;
 
 public interface IRemoteConfigurationService
 {
-    Task InitializeAsync(CancellationToken cancellationToken);
-    Task ReloadAsync(CancellationToken cancellationToken);
+    Task InitializeAsync(CancellationToken ct);
+    Task ReloadAsync(CancellationToken ct);
 }

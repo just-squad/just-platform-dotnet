@@ -4,6 +4,14 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+        <Version>0.0.1</Version>
+        <Company>JustSquad</Company>
+        <Copyright>Copyright © $(Company) $(Year)</Copyright>
+        <PackageProjectUrl>https://github.com/just-squad/just-platform-dotnet</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/just-squad/just-platform-dotnet</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <PackageOutputPath>./nupkgs</PackageOutputPath>
     </PropertyGroup>
 
     <PropertyGroup>

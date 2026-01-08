@@ -50,7 +50,7 @@ public static class ServiceCollectionExtensions
         var refreshInterval = TimeSpan.FromSeconds(platformVaultOptionsValue.RefreshIntervalSeconds);
         var provider = new MutableConfigurationProvider(refreshInterval);
         services.AddSingleton<IConfigurationProvider>(provider);
-        services.AddSingleton(provider); // Для использования в RemoteConfigurationService
+        services.AddSingleton(provider);
 
         services.AddHttpClient<IVaultProvider, VaultHttpProvider>((provider, client) =>
         {
@@ -66,6 +66,8 @@ public static class ServiceCollectionExtensions
             }
         });
 
+        // Внедряем локальную конфигурацию для fallback
+        services.AddSingleton<IConfiguration>(configuration);
         services.AddSingleton<IRemoteConfigurationService, RemoteConfigurationService>();
         services.AddHostedService<RemoteConfigurationHostedService>();
 

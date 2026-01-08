@@ -5,7 +5,7 @@ public class VaultV2SecretResponse
     public required VaultV2Data Data { get; set; }
 }
 
-public class VaultV2Data
+public class VaultV2Data : IHasVaultData
 {
     public required VaultV2Metadata Metadata { get; set; }
     public required Dictionary<string, object> Data { get; set; }

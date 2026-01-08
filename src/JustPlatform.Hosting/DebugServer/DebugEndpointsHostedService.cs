@@ -17,7 +17,7 @@ public class DebugEndpointsHostedService : IHostedService
         _options = options;
     }
 
-    public async Task StartAsync(CancellationToken cancellationToken)
+    public async Task StartAsync(CancellationToken ct)
     {
         if (_options.Ports.HttpPort == _options.Ports.DebugPort)
         {
@@ -60,14 +60,14 @@ public class DebugEndpointsHostedService : IHostedService
 
         _debugApp = app;
 
-        await app.StartAsync(cancellationToken);
+        await app.StartAsync(ct);
     }
 
-    public async Task StopAsync(CancellationToken cancellationToken)
+    public async Task StopAsync(CancellationToken ct)
     {
         if (_debugApp != null)
         {
-            await _debugApp.StopAsync(cancellationToken);
+            await _debugApp.StopAsync(ct);
         }
     }
 }

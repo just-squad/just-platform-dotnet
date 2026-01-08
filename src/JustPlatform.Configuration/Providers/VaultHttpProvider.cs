@@ -17,11 +17,11 @@ public class VaultHttpProvider : IVaultProvider
         _logger = logger;
     }
 
-    public async Task<VaultSecretResponse?> GetSecretV1Async(string path, CancellationToken cancellationToken = default)
+    public async Task<VaultSecretResponse?> GetSecretV1Async(string path, CancellationToken ct)
     {
         try
         {
-            var response = await _httpClient.GetAsync($"/v1/{path}", cancellationToken);
+            var response = await _httpClient.GetAsync($"/v1/{path}", ct);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -29,7 +29,7 @@ public class VaultHttpProvider : IVaultProvider
                 return null;
             }
 
-            var result = await response.Content.ReadFromJsonAsync<VaultSecretResponse>(cancellationToken: cancellationToken);
+            var result = await response.Content.ReadFromJsonAsync<VaultSecretResponse>(cancellationToken: ct);
             return result;
         }
         catch (Exception ex)
@@ -39,7 +39,7 @@ public class VaultHttpProvider : IVaultProvider
         }
     }
 
-    public async Task<VaultV2SecretResponse?> GetSecretV2Async(string path, CancellationToken cancellationToken = default)
+    public async Task<VaultV2SecretResponse?> GetSecretV2Async(string path, CancellationToken ct)
     {
         try
         {
@@ -48,7 +48,7 @@ public class VaultHttpProvider : IVaultProvider
             var secretPath = ExtractSecretPathFromPath(path);
             var fullUrl = $"/v1/{mount}/data/{secretPath}";
 
-            var response = await _httpClient.GetAsync(fullUrl, cancellationToken);
+            var response = await _httpClient.GetAsync(fullUrl, ct);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -56,7 +56,7 @@ public class VaultHttpProvider : IVaultProvider
                 return null;
             }
 
-            var result = await response.Content.ReadFromJsonAsync<VaultV2SecretResponse>(cancellationToken: cancellationToken);
+            var result = await response.Content.ReadFromJsonAsync<VaultV2SecretResponse>(cancellationToken: ct);
             return result;
         }
         catch (Exception ex)
