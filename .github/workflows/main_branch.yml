@@ -40,30 +40,36 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-  build-and-test:
-    needs: release
+  build:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Run tests
+        run: dotnet test --configuration Release --no-build --verbosity normal
 
-    - name: Setup .NET
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
-
-    - name: Restore dependencies
-      run: dotnet restore
-
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
-
-    - name: Run tests
-      run: dotnet test --configuration Release --no-build --verbosity normal
 
   publish:
-    needs: [build-and-test, release]
+    needs: [build, tests, release]
     runs-on: ubuntu-latest
     if: needs.release.outputs.released == 'true'
 
