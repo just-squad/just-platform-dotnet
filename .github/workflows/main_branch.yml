@@ -11,8 +11,8 @@ jobs:
   release:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.semantic_release.outputs.version }}
-      released: ${{ steps.semantic_release.outputs.released }}
+      version: ${{ steps.tag.outputs.new_tag }}
+      released: ${{ steps.release.outputs.published }}
 
     steps:
     - name: Checkout code
@@ -33,15 +33,36 @@ jobs:
           @semantic-release/github \
           @semantic-release/exec
 
-    - name: Run semantic-release
-      id: semantic_release
+    - name: Run semantic-release and get version
+      id: release
       run: |
-        npx semantic-release --dry-run
+        # Запускаем semantic-release и проверяем, был ли релиз
+        OUTPUT=$(npx semantic-release)
+        echo "$OUTPUT"
+
+        # Извлекаем версию из лога (semantic-release обычно выводит "Published release X.Y.Z")
+        VERSION=$(echo "$OUTPUT" | grep -Eo 'Published release [0-9]+\.[0-9]+\.[0-9]+' | cut -d ' ' -f 3)
+        if [ ! -z "$VERSION" ]; then
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "published=true" >> $GITHUB_OUTPUT
+          echo "Tagging Directory.Build.props with version $VERSION"
+          sed -i "s/<Version>.*<\/Version>/<Version>$VERSION<\/Version>/" Directory.Build.props
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add Directory.Build.props
+          git commit -m "chore: update Directory.Build.props to $VERSION [skip ci]"
+          git push origin main
+          git tag "v$VERSION"
+          git push origin "v$VERSION"
+        else
+          echo "published=false" >> $GITHUB_OUTPUT
+        fi
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   build:
     runs-on: ubuntu-latest
+    needs: release
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -53,8 +74,10 @@ jobs:
         run: dotnet restore
       - name: Build
         run: dotnet build --configuration Release --no-restore
+
   tests:
     runs-on: ubuntu-latest
+    needs: release
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -67,11 +90,10 @@ jobs:
       - name: Run tests
         run: dotnet test --configuration Release --no-build --verbosity normal
 
-
   publish:
     needs: [build, tests, release]
     runs-on: ubuntu-latest
-    if: needs.release.outputs.released == 'true'
+    if: needs.release.outputs.published == 'true'
 
     steps:
     - name: Checkout code
@@ -85,10 +107,15 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: Build and pack with version from tag
+    - name: Build and pack with version from semantic-release
       run: |
+        # Берём версию из output'а release job'ы
         TAG_VERSION="${{ needs.release.outputs.version }}"
-        echo "Building with version: $TAG_VERSION"
+        if [ -z "$TAG_VERSION" ]; then
+          echo "ERROR: TAG_VERSION is empty!"
+          exit 1
+        fi
+        echo "Building and packing with version: $TAG_VERSION"
         dotnet build --configuration Release --no-restore /p:Version=$TAG_VERSION
         dotnet pack --configuration Release --no-build --output ./nupkgs /p:Version=$TAG_VERSION
 
@@ -96,6 +123,9 @@ jobs:
       run: |
         for package in ./nupkgs/*.nupkg; do
           if [ -f "$package" ]; then
+            echo "Publishing $package"
             dotnet nuget push "$package" --api-key ${{ secrets.NUGET_API_KEY }} --source https://api.nuget.org/v3/index.json --skip-duplicate
+          else
+            echo "No .nupkg files found to publish."
           fi
         done
