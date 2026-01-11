@@ -28,19 +28,9 @@ public abstract class Entity<TId>
             return false;
         }
 
-        if (ReferenceEquals(this, item))
-        {
-            return true;
-        }
-
-        if (GetType() != item.GetType())
-        {
-            return false;
-        }
-
-        return item.IsTransient() || IsTransient() 
-                ? false 
-                : item.Id.Equals(Id);
+        return ReferenceEquals(this, item)
+            ? true
+            : GetType() == item.GetType() && !item.IsTransient() && !IsTransient() && item.Id.Equals(Id);
     }
 
     public override int GetHashCode()
@@ -57,10 +47,7 @@ public abstract class Entity<TId>
         return base.GetHashCode();
 
     }
-    public static bool operator ==(Entity<TId> left, Entity<TId> right)
-    {
-        return Object.Equals(left, null) ? Object.Equals(right, null) : left.Equals(right);
-    }
+    public static bool operator ==(Entity<TId> left, Entity<TId> right) => Object.Equals(left, null) ? Object.Equals(right, null) : left.Equals(right);
 
     public static bool operator !=(Entity<TId> left, Entity<TId> right) => !(left == right);
 }
