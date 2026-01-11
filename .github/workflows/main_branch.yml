@@ -118,7 +118,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         token: ${{ steps.app-token.outputs.token }}
-        fetch-depth: 0 # Чтобы получить теги
+        fetch-depth: 0 # Чтобы получить теги и все коммиты
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -127,6 +127,25 @@ jobs:
 
     - name: Restore dependencies
       run: dotnet restore
+
+    # --- ПРОВЕРКА: Убедиться, что Directory.Build.props содержит правильную версию ---
+    - name: Verify Directory.Build.props version
+      run: |
+        EXPECTED_VERSION="${{ needs.release.outputs.version }}"
+        if [ -z "$EXPECTED_VERSION" ]; then
+          echo "ERROR: Expected version is empty!"
+          exit 1
+        fi
+
+        # Читаем версию из Directory.Build.props
+        ACTUAL_VERSION=$(grep -oP '<Version>\K[^<]*' Directory.Build.props)
+        if [ "$ACTUAL_VERSION" != "$EXPECTED_VERSION" ]; then
+          echo "ERROR: Version in Directory.Build.props ($ACTUAL_VERSION) does not match expected version ($EXPECTED_VERSION)"
+          exit 1
+        fi
+
+        echo "Directory.Build.props contains correct version: $ACTUAL_VERSION"
+
 
     # --- Получаем версию из последнего тега ---
     - name: Get latest tag version
@@ -142,11 +161,12 @@ jobs:
         fi
         echo "version=$VERSION" >> $GITHUB_OUTPUT
         echo "Latest tag: $LATEST_TAG, extracted version: $VERSION"
-
-    - name: Build and pack with version from tag
+  
+    # --- ИСПОЛЬЗУЕМ ВЕРСИЮ ИЗ release job ---
+    - name: Build and pack with version from release job
       run: |
-        # Используем версию из тега, а не из props
-        TAG_VERSION="${{ steps.tag.outputs.version }}"
+        # Используем версию из outputs
+        TAG_VERSION="${{ needs.release.outputs.version }}"
         if [ -z "$TAG_VERSION" ]; then
           echo "ERROR: TAG_VERSION is empty!"
           exit 1
