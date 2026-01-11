@@ -1,27 +1,37 @@
-﻿using JustPlatform.Extensions;
+using JustPlatform.Hosting.Extensions;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Routing;
 
-var dictionary = new Dictionary<int, string>
-{
-    [1] = "2",
-    [2] = "2",
-    [3] = "2",
-    [4] = "2"
-};
+var builder = WebApplication.CreateBuilder(args);
 
-dictionary.TryAdd(5, "3");
+builder.AddJustPlatform(
+    configureOptions: options =>
+    {
+        options.EnableSwagger = true;
+        options.Ports.HttpPort = 8080;
+        options.Ports.DebugPort = 8081;
+        options.Ports.GrpcPort = 8082;
+    },
+    addServices: services =>
+    {
+        services.AddTransient<MyDummyService>();
+    },
+    configureEndpoints: endpoints =>
+    {
+        endpoints.MapGet("/hello", async context =>
+        {
+            await context.Response.WriteAsync("Hello, World!");
+        });
+    }
+);
 
-if (!dictionary.TryGetValue(5, out var value))
-{
-    dictionary.Add(5, "3");
-}
+var app = builder.Build();
 
-var getOrAddValue5 = dictionary.GetOrAdd(5, "3");
-var getOrAddValue1 = dictionary.GetOrAdd(1, "3");
-Console.WriteLine(getOrAddValue5);
-Console.WriteLine(getOrAddValue1);
+app.UseJustPlatform();
 
-var tryUpdate1 = dictionary.TryUpdate(1, "3");
-Console.WriteLine($"{tryUpdate1} {dictionary[1]}");
+app.Run();
 
-var tryUpdate2 = dictionary.TryUpdate(6, "3");
-Console.WriteLine($"{tryUpdate2}");
+// Dummy service for demonstration
+public class MyDummyService { }
