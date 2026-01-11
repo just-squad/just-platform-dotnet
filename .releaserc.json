@@ -30,7 +30,7 @@
     [
       "@semantic-release/exec",
       {
-        "prepareCmd": "sed -i 's/<Version>.*<\\/Version>/<Version>${nextRelease.version}<\\/Version>/' Directory.Build.props && git add Directory.Build.props && git commit -m \"chore: update Directory.Build.props to ${nextRelease.version} [skip ci]\""
+        "prepareCmd": "sed -i 's/<Version>.*<\\/Version>/<Version>${nextRelease.version}<\\/Version>/' Directory.Build.props && git add Directory.Build.props && git commit -m \"chore: update Directory.Build.props to ${nextRelease.version} [skip ci]\" && git push origin main"
       }
     ]
   ]
