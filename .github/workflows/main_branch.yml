@@ -40,7 +40,6 @@ jobs:
           @semantic-release/github \
           @semantic-release/exec
 
-    # Запускаем semantic-release и проверяем результат
     - name: Run semantic-release
       id: release_raw
       run: |
@@ -75,7 +74,6 @@ jobs:
   # build и tests запускаем независимо
   build:
     runs-on: ubuntu-latest
-    # Убираем 'needs: release', чтобы build всегда запускался
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -90,7 +88,6 @@ jobs:
 
   tests:
     runs-on: ubuntu-latest
-    # Убираем 'needs: release', чтобы tests всегда запускались
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -103,9 +100,8 @@ jobs:
       - name: Run tests
         run: dotnet test --configuration Release --no-build --verbosity normal
 
-  # publish зависит от всех трёх
   publish:
-    needs: [build, tests, release] # Зависит от всех
+    needs: [build, tests, release]
     runs-on: ubuntu-latest
     # Условие: только если release прошёл успешно и опубликован
     if: needs.release.result == 'success' && needs.release.outputs.published == 'true'
