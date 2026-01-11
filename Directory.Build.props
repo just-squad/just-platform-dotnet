@@ -5,7 +5,7 @@
         <Nullable>enable</Nullable>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
         <Version>1.0.4</Version>
-	<Authors>JustSquad</Authors>
+        <Authors>JustSquad</Authors>
         <Company>JustSquad</Company>
         <Copyright>Copyright © $(Company) $(Year)</Copyright>
         <PackageProjectUrl>https://github.com/just-squad/just-platform-dotnet</PackageProjectUrl>
