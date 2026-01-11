@@ -16,6 +16,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{4B06B7
 		.gitignore = .gitignore
 		Directory.Packages.props = Directory.Packages.props
 		.editorconfig = .editorconfig
+		.releaserc.json = .releaserc.json
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JustPlatform.Domain", "src\JustPlatform.Domain\JustPlatform.Domain.csproj", "{B714D6FB-7848-4672-8963-776D5D5784DF}"
