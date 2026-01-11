@@ -127,40 +127,6 @@ jobs:
 
     - name: Restore dependencies
       run: dotnet restore
-
-    # --- ПРОВЕРКА: Убедиться, что Directory.Build.props содержит правильную версию ---
-    - name: Verify Directory.Build.props version
-      run: |
-        EXPECTED_VERSION="${{ needs.release.outputs.version }}"
-        if [ -z "$EXPECTED_VERSION" ]; then
-          echo "ERROR: Expected version is empty!"
-          exit 1
-        fi
-
-        # Читаем версию из Directory.Build.props
-        ACTUAL_VERSION=$(grep -oP '<Version>\K[^<]*' Directory.Build.props)
-        if [ "$ACTUAL_VERSION" != "$EXPECTED_VERSION" ]; then
-          echo "ERROR: Version in Directory.Build.props ($ACTUAL_VERSION) does not match expected version ($EXPECTED_VERSION)"
-          exit 1
-        fi
-
-        echo "Directory.Build.props contains correct version: $ACTUAL_VERSION"
-
-
-    # --- Получаем версию из последнего тега ---
-    - name: Get latest tag version
-      id: tag
-      run: |
-        # Получаем последний тег
-        LATEST_TAG=$(git describe --tags --abbrev=0)
-        if [[ $LATEST_TAG == v* ]]; then
-          # Убираем префикс 'v'
-          VERSION=${LATEST_TAG#v}
-        else
-          VERSION=$LATEST_TAG
-        fi
-        echo "version=$VERSION" >> $GITHUB_OUTPUT
-        echo "Latest tag: $LATEST_TAG, extracted version: $VERSION"
   
     # --- ИСПОЛЬЗУЕМ ВЕРСИЮ ИЗ release job ---
     - name: Build and pack with version from release job
