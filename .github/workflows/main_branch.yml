@@ -11,7 +11,8 @@ jobs:
   release:
     runs-on: ubuntu-latest
     outputs:
-      version: ${{ steps.tag.outputs.new_tag }}
+      # Получаем версию из тега, созданного semantic-release
+      version: ${{ steps.release.outputs.new_release_version }}
       released: ${{ steps.release.outputs.published }}
 
     steps:
@@ -40,28 +41,18 @@ jobs:
           @semantic-release/github \
           @semantic-release/exec
 
-    - name: Run semantic-release and get version
+    - name: Run semantic-release
       id: release
       run: |
-        # Запускаем semantic-release и проверяем, был ли релиз
-        OUTPUT=$(npx semantic-release)
+        OUTPUT=$(npx semantic-release 2>&1)
         echo "$OUTPUT"
 
-        # Извлекаем версию из лога (semantic-release обычно выводит "Published release X.Y.Z")
         VERSION=$(echo "$OUTPUT" | grep -Eo 'Published release [0-9]+\.[0-9]+\.[0-9]+' | cut -d ' ' -f 3)
         if [ ! -z "$VERSION" ]; then
-          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "new_release_version=$VERSION" >> $GITHUB_OUTPUT
           echo "published=true" >> $GITHUB_OUTPUT
-          echo "Tagging Directory.Build.props with version $VERSION"
-          sed -i "s/<Version>.*<\/Version>/<Version>$VERSION<\/Version>/" Directory.Build.props
-          git config --global user.name 'github-actions[bot]'
-          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add Directory.Build.props
-          git commit -m "chore: update Directory.Build.props to $VERSION [skip ci]"
-          git push origin main
-          git tag "v$VERSION"
-          git push origin "v$VERSION"
         else
+          echo "new_release_version=" >> $GITHUB_OUTPUT
           echo "published=false" >> $GITHUB_OUTPUT
         fi
       env:
@@ -73,6 +64,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }} # Можно использовать обычный токен для build/tests
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -88,6 +81,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
@@ -103,8 +98,18 @@ jobs:
     if: needs.release.outputs.published == 'true'
 
     steps:
+    - name: Generate GitHub App token (for checkout)
+      uses: tibdex/github-app-token@v2
+      id: app-token
+      with:
+        app_id: ${{ secrets.APP_ID }}
+        private_key: ${{ secrets.APP_PRIVATE_KEY }}
+
     - name: Checkout code
       uses: actions/checkout@v4
+      with:
+        token: ${{ steps.app-token.outputs.token }}
+        fetch-depth: 0 # Чтобы получить теги
 
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
@@ -114,10 +119,25 @@ jobs:
     - name: Restore dependencies
       run: dotnet restore
 
-    - name: Build and pack with version from semantic-release
+    # --- Получаем версию из последнего тега ---
+    - name: Get latest tag version
+      id: tag
       run: |
-        # Берём версию из output'а release job'ы
-        TAG_VERSION="${{ needs.release.outputs.version }}"
+        # Получаем последний тег
+        LATEST_TAG=$(git describe --tags --abbrev=0)
+        if [[ $LATEST_TAG == v* ]]; then
+          # Убираем префикс 'v'
+          VERSION=${LATEST_TAG#v}
+        else
+          VERSION=$LATEST_TAG
+        fi
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
+        echo "Latest tag: $LATEST_TAG, extracted version: $VERSION"
+
+    - name: Build and pack with version from tag
+      run: |
+        # Используем версию из тега, а не из props
+        TAG_VERSION="${{ steps.tag.outputs.version }}"
         if [ -z "$TAG_VERSION" ]; then
           echo "ERROR: TAG_VERSION is empty!"
           exit 1
