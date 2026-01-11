@@ -2,29 +2,40 @@ using JustPlatform.Configuration;
 
 namespace JustPlatform.Hosting.Configuration;
 
+/// <summary>
+/// Set of just platform options
+/// </summary>
+/// <remarks>
+/// Section name in configurations "PlatformOptions"
+/// </remarks>
 public class PlatformOptions
 {
     public const string SectionName = "PlatformOptions";
 
-    public bool EnableHealthChecks { get; init; } = true;
-    public bool EnableMetrics { get; init; } = true;
-    public bool EnableSerilog { get; init; } = true;
-    public bool EnableSwagger { get; init; } = false;
+    public bool EnableHealthChecks { get; set; } = true;
+    public bool EnableMetrics { get; set; } = true;
+    public bool EnableSerilog { get; set; } = true;
+    public bool EnableSwagger { get; set; } = false;
 
+    /// <summary>
+    /// Connection ports
+    /// </summary>
+    public PlatformPortsOptions Ports { get; set; } = new();
 
-    // Порты
-    public PlatformPortsOptions Ports { get; init; } = new();
+    /// <summary>
+    /// Vault connection
+    /// </summary>
+    public PlatformVaultOptions Vault { get; set; } = new();
 
-    // Vault connection
-    public PlatformVaultOptions VaultOptions { get; init; } = new();
-
-    // Переопределение конфигураций
+    /// <summary>
+    /// Override configurations
+    /// </summary>
     public Dictionary<string, string?>? OverrideConfiguration { get; set; } = new();
 }
 
 public class PlatformPortsOptions
 {
-    public int HttpPort { get; init; } = 80;
-    public int GrpcPort { get; init; } = 82;
-    public int DebugPort { get; init; } = 84;
+    public int HttpPort { get; set; } = 80;
+    public int GrpcPort { get; set; } = 82;
+    public int DebugPort { get; set; } = 84;
 }

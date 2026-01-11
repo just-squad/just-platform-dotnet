@@ -7,6 +7,16 @@
     <Platforms>AnyCPU</Platforms>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <Description>A foundational library for building robust ASP.NET Core services, providing out-of-the-box configuration for common patterns like health checks, metrics, logging, and more.</Description>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageTags>hosting, aspnetcore, webapi, platform, healthchecks, metrics, opentelemetry</PackageTags>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
   <ItemGroup>
     <PackageReference Include="Microsoft.Extensions.Hosting" />
     <PackageReference Include="Microsoft.Extensions.Configuration" />
@@ -17,7 +27,7 @@
     <PackageReference Include="OpenTelemetry.Instrumentation.AspNetCore" />
     <PackageReference Include="OpenTelemetry.Instrumentation.Http" />
     <PackageReference Include="OpenTelemetry.Instrumentation.Runtime" />
-    <PackageReference Include="Swashbuckle.AspNetCore" /> 
+    <PackageReference Include="Swashbuckle.AspNetCore" />
   </ItemGroup>
 
   <ItemGroup>

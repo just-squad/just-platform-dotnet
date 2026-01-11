@@ -1,3 +1,4 @@
+using System;
 using JustPlatform.Hosting.Configuration;
 using JustPlatform.Hosting.DebugServer;
 using JustPlatform.Hosting.HealthCheck;
@@ -8,54 +9,71 @@ using Serilog;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
+using JustPlatform.Hosting.Metrics;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.Routing;
 
 namespace JustPlatform.Hosting.Extensions;
 
 public static class ServiceCollectionExtensions
 {
     public static WebApplicationBuilder AddJustPlatform(this WebApplicationBuilder builder,
-        Action<PlatformOptions>? configureOptions = null)
+        Action<PlatformOptions>? configureOptions = null,
+        Action<IServiceCollection>? addServices = null,
+        Action<IApplicationBuilder>? configurePipeline = null,
+        Action<IEndpointRouteBuilder>? configureEndpoints = null
+        )
     {
-        builder.Services.AddJustPlatform(
-            builder.Environment,
-            builder.Configuration,
-            configureOptions
-        );
+        // 1. Resolve options
+        var options = new PlatformOptions();
+        var optionsFromCfg = builder.Configuration.GetSection(PlatformOptions.SectionName).Get<PlatformOptions>();
+        if (optionsFromCfg is not null)
+        {
+            options = optionsFromCfg;
+        }
+        configureOptions?.Invoke(options);
+
+        // 2. Configure Kestrel
+        builder.WebHost.ConfigureKestrel(kestrelOptions =>
+        {
+            kestrelOptions.ListenAnyIP(options.Ports.HttpPort, listenOptions =>
+            {
+                listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
+            });
+
+            kestrelOptions.ListenAnyIP(options.Ports.GrpcPort, listenOptions =>
+            {
+                listenOptions.Protocols = HttpProtocols.Http2;
+            });
+        });
+
+        // 3. Add platform services
+        builder.Services.AddJustPlatform(builder.Configuration, options);
+
+        // 4. Add custom user services
+        addServices?.Invoke(builder.Services);
+
+        // 5. Register extensibility delegates for middleware
+        var extensibilityOptions = new JustPlatformExtensibilityOptions
+        {
+            ConfigurePipeline = configurePipeline,
+            ConfigureEndpoints = configureEndpoints
+        };
+        builder.Services.AddSingleton(extensibilityOptions);
 
 
         return builder;
     }
 
-    public static IServiceCollection AddJustPlatform(this IServiceCollection services,
-            IWebHostEnvironment webHostEnvironment,
-            IConfigurationBuilder configurationManager,
-            Action<PlatformOptions>? configureOptions = null)
+    public static IServiceCollection AddJustPlatform(this IServiceCollection services, IConfiguration configuration, PlatformOptions options)
     {
-        var options = new PlatformOptions();
-        // 1. Строим конфигурацию
-        var cfgBuilder = configurationManager.AddJustPlatformConfigurationSources(webHostEnvironment.EnvironmentName);
-        var cfg = cfgBuilder.Build();
-        var optionsFromCfg = cfg.GetSection(PlatformOptions.SectionName).Get<PlatformOptions>();
-        if (optionsFromCfg is not null)
+        // Register options for middleware to use
+        services.AddSingleton(options);
+
+        // Vault/OpenBao (опционально, если включено)
+        if (options.Vault.IsEnabled)
         {
-            options = optionsFromCfg;
-        }
-
-        // 2. Если пользователь задал переменные явно, то нужно переписать значения
-        configureOptions?.Invoke(options);
-
-
-        // 3. Vault/OpenBao (опционально, если включено)
-        if (options.VaultOptions.IsEnabled)
-        {
-            services.AddJustPlatformVaultConfiguration(configurationManager.Build());
-        }
-
-        // 2. Применяем переопределения из PlatformOptions
-        if (options.OverrideConfiguration is not null)
-        {
-            var notNullConfigurations = options.OverrideConfiguration.Where(kvp => kvp.Value != null).ToDictionary();
-            configurationManager.AddInMemoryCollection(notNullConfigurations);
+            services.AddJustPlatformVaultConfiguration(configuration);
         }
 
         if (options.EnableHealthChecks)
@@ -63,6 +81,12 @@ public static class ServiceCollectionExtensions
             services.AddHealthChecks()
                     .AddCheck<LivenessCheck>("liveness", HealthStatus.Degraded, new[] { "live" })
                     .AddCheck<ReadinessCheck>("readiness", HealthStatus.Degraded, new[] { "ready" });
+        }
+
+        if (options.EnableSwagger)
+        {
+            services.AddControllers();
+            services.AddSwaggerGen();
         }
 
         if (options.EnableSerilog)
@@ -73,7 +97,7 @@ public static class ServiceCollectionExtensions
 
         if (options.EnableMetrics)
         {
-            services.AddOpenTelemetry();
+            services.AddPlatformOpenTelemetry(options);
         }
 
         // Регистрируем hosted service для debug-сервера

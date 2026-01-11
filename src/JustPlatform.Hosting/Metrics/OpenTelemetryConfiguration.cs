@@ -1,24 +1,26 @@
+using System.Reflection;
+using JustPlatform.Hosting.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OpenTelemetry.Metrics;
-using OpenTelemetry.Trace;
+using OpenTelemetry.Resources;
 
 namespace JustPlatform.Hosting.Metrics;
 
 public static class OpenTelemetryConfiguration
 {
-    public static IServiceCollection AddPlatformTelemetry(this IServiceCollection services)
+    public static IServiceCollection AddPlatformOpenTelemetry(this IServiceCollection services, PlatformOptions options)
     {
         services.AddOpenTelemetry()
-            .WithMetrics(metrics =>
+            .WithMetrics(builder =>
             {
-                metrics.AddAspNetCoreInstrumentation()
-                       .AddHttpClientInstrumentation()
-                       .AddRuntimeInstrumentation();
-            })
-            .WithTracing(tracing =>
-            {
-                tracing.AddAspNetCoreInstrumentation()
-                       .AddHttpClientInstrumentation();
+                builder
+                    .SetResourceBuilder(
+                        ResourceBuilder.CreateDefault()
+                            .AddService(Assembly.GetEntryAssembly()?.GetName().Name ?? "UnknownService"))
+                    .AddAspNetCoreInstrumentation()
+                    .AddHttpClientInstrumentation()
+                    .AddRuntimeInstrumentation()
+                    .AddPrometheusExporter();
             });
 
         return services;
