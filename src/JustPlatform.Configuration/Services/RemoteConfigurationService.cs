@@ -80,7 +80,7 @@ public class RemoteConfigurationService : IRemoteConfigurationService, IDisposab
                 }
 
                 await _provider.UpdateDataAsync(newData);
-                
+
                 if (_isUsingFallback)
                 {
                     _logger.LogInformation("Successfully reconnected to Vault. Fallback mode disabled.");
@@ -136,7 +136,7 @@ public class RemoteConfigurationService : IRemoteConfigurationService, IDisposab
     {
         var response = await _vaultProvider.GetSecretV2Async(vaultPath, ct);
         return response?.Data;
-    } 
+    }
 
     public void Dispose()
     {

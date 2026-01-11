@@ -2,10 +2,7 @@ namespace JustPlatform.Domain;
 
 public abstract class ValueObject
 {
-    protected static bool EqualOperator(ValueObject left, ValueObject right)
-    {
-        return ReferenceEquals(left, null) ^ ReferenceEquals(right, null) ? false : ReferenceEquals(left, null) || left.Equals(right);
-    }
+    protected static bool EqualOperator(ValueObject left, ValueObject right) => !(left is null ^ right is null) && (left is null || left.Equals(right));
 
     protected static bool NotEqualOperator(ValueObject left, ValueObject right) => !(EqualOperator(left, right));
 

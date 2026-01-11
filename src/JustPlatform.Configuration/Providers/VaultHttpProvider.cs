@@ -1,4 +1,3 @@
-using System;
 using System.Net.Http.Json;
 using JustPlatform.Configuration.Models;
 using Microsoft.Extensions.Logging;
@@ -75,8 +74,8 @@ public class VaultHttpProvider : IVaultProvider
     private static string ExtractSecretPathFromPath(string path)
     {
         var parts = path.Split('/', StringSplitOptions.RemoveEmptyEntries);
-        return parts.Length <= 1 
-            ? "" 
+        return parts.Length <= 1
+            ? ""
             : string.Join("/", parts.Skip(1));
     }
 }
