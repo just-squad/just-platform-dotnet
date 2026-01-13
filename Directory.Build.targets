@@ -5,7 +5,7 @@
         <PropertyGroup>
             <NugetPackageRoot Condition=" '$(NugetPackageRoot)' == '' ">$(UserProfile)\.nuget\packages</NugetPackageRoot>
             <NugetDeletedProjectInCache>$(NugetPackageRoot)$(ProjectName)\$(NugetPackageVersion)</NugetDeletedProjectInCache>
-            <NugetSourceFolder>$(MsBuildProjectDirectory)\bin\$(Configuration)</NugetSourceFolder>
+            <NugetSourceFolder>$(MsBuildProjectDirectory)\nupkgs</NugetSourceFolder>
             <NugetSourceFile>$(NugetSourceFolder)\$(ProjectName).$(Version).nupkg</NugetSourceFile>
         </PropertyGroup>
 

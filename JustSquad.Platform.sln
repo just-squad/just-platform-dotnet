@@ -150,12 +150,12 @@ Global
 		{5B507EDF-D64E-4523-B2C9-D6D29B26177D}.Release|x64.Build.0 = Release|Any CPU
 		{5B507EDF-D64E-4523-B2C9-D6D29B26177D}.Release|x86.ActiveCfg = Release|Any CPU
 		{5B507EDF-D64E-4523-B2C9-D6D29B26177D}.Release|x86.Build.0 = Release|Any CPU
-		{5B507EDF-D64E-4523-B2C9-D6D29B26177D}.DebugNugetPackages|Any CPU.ActiveCfg = Debug|Any CPU
-		{5B507EDF-D64E-4523-B2C9-D6D29B26177D}.DebugNugetPackages|Any CPU.Build.0 = Debug|Any CPU
 		{5B507EDF-D64E-4523-B2C9-D6D29B26177D}.DebugNugetPackages|x64.ActiveCfg = Debug|Any CPU
 		{5B507EDF-D64E-4523-B2C9-D6D29B26177D}.DebugNugetPackages|x64.Build.0 = Debug|Any CPU
 		{5B507EDF-D64E-4523-B2C9-D6D29B26177D}.DebugNugetPackages|x86.ActiveCfg = Debug|Any CPU
 		{5B507EDF-D64E-4523-B2C9-D6D29B26177D}.DebugNugetPackages|x86.Build.0 = Debug|Any CPU
+		{5B507EDF-D64E-4523-B2C9-D6D29B26177D}.DebugNugetPackages|Any CPU.ActiveCfg = DebugNugetPackages|Any CPU
+		{5B507EDF-D64E-4523-B2C9-D6D29B26177D}.DebugNugetPackages|Any CPU.Build.0 = DebugNugetPackages|Any CPU
 		{F892BAC1-48CD-4296-BB7D-95E349573B14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F892BAC1-48CD-4296-BB7D-95E349573B14}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F892BAC1-48CD-4296-BB7D-95E349573B14}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -168,12 +168,12 @@ Global
 		{F892BAC1-48CD-4296-BB7D-95E349573B14}.Release|x64.Build.0 = Release|Any CPU
 		{F892BAC1-48CD-4296-BB7D-95E349573B14}.Release|x86.ActiveCfg = Release|Any CPU
 		{F892BAC1-48CD-4296-BB7D-95E349573B14}.Release|x86.Build.0 = Release|Any CPU
-		{F892BAC1-48CD-4296-BB7D-95E349573B14}.DebugNugetPackages|Any CPU.ActiveCfg = Debug|Any CPU
-		{F892BAC1-48CD-4296-BB7D-95E349573B14}.DebugNugetPackages|Any CPU.Build.0 = Debug|Any CPU
 		{F892BAC1-48CD-4296-BB7D-95E349573B14}.DebugNugetPackages|x64.ActiveCfg = Debug|Any CPU
 		{F892BAC1-48CD-4296-BB7D-95E349573B14}.DebugNugetPackages|x64.Build.0 = Debug|Any CPU
 		{F892BAC1-48CD-4296-BB7D-95E349573B14}.DebugNugetPackages|x86.ActiveCfg = Debug|Any CPU
 		{F892BAC1-48CD-4296-BB7D-95E349573B14}.DebugNugetPackages|x86.Build.0 = Debug|Any CPU
+		{F892BAC1-48CD-4296-BB7D-95E349573B14}.DebugNugetPackages|Any CPU.ActiveCfg = DebugNugetPackages|Any CPU
+		{F892BAC1-48CD-4296-BB7D-95E349573B14}.DebugNugetPackages|Any CPU.Build.0 = DebugNugetPackages|Any CPU
 		{87C8BC88-53A7-441B-8DAC-076E52A9848A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{87C8BC88-53A7-441B-8DAC-076E52A9848A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87C8BC88-53A7-441B-8DAC-076E52A9848A}.Debug|x64.ActiveCfg = Debug|Any CPU
@@ -186,12 +186,12 @@ Global
 		{87C8BC88-53A7-441B-8DAC-076E52A9848A}.Release|x64.Build.0 = Release|Any CPU
 		{87C8BC88-53A7-441B-8DAC-076E52A9848A}.Release|x86.ActiveCfg = Release|Any CPU
 		{87C8BC88-53A7-441B-8DAC-076E52A9848A}.Release|x86.Build.0 = Release|Any CPU
-		{87C8BC88-53A7-441B-8DAC-076E52A9848A}.DebugNugetPackages|Any CPU.ActiveCfg = Debug|Any CPU
-		{87C8BC88-53A7-441B-8DAC-076E52A9848A}.DebugNugetPackages|Any CPU.Build.0 = Debug|Any CPU
 		{87C8BC88-53A7-441B-8DAC-076E52A9848A}.DebugNugetPackages|x64.ActiveCfg = Debug|Any CPU
 		{87C8BC88-53A7-441B-8DAC-076E52A9848A}.DebugNugetPackages|x64.Build.0 = Debug|Any CPU
 		{87C8BC88-53A7-441B-8DAC-076E52A9848A}.DebugNugetPackages|x86.ActiveCfg = Debug|Any CPU
 		{87C8BC88-53A7-441B-8DAC-076E52A9848A}.DebugNugetPackages|x86.Build.0 = Debug|Any CPU
+		{87C8BC88-53A7-441B-8DAC-076E52A9848A}.DebugNugetPackages|Any CPU.ActiveCfg = DebugNugetPackages|Any CPU
+		{87C8BC88-53A7-441B-8DAC-076E52A9848A}.DebugNugetPackages|Any CPU.Build.0 = DebugNugetPackages|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

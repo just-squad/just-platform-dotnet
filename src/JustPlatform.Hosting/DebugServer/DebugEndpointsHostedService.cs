@@ -1,17 +1,19 @@
+using System.Reflection;
 using JustPlatform.Hosting.Configuration;
 using JustPlatform.Hosting.HealthCheck;
 using JustPlatform.Hosting.Metrics;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
-using System.Reflection;
-using Microsoft.AspNetCore.Http;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace JustPlatform.Hosting.DebugServer;
 
-public class DebugEndpointsHostedService(PlatformOptions _options) : IHostedService
+public class DebugEndpointsHostedService(PlatformOptions _options, IServiceProvider _mainAppServiceProvider)
+    : IHostedService
 {
     private WebApplication? _debugApp;
 
@@ -46,7 +48,9 @@ public class DebugEndpointsHostedService(PlatformOptions _options) : IHostedServ
         
         if (_options.EnableSwagger)
         {
-            builder.Services.AddSwaggerGen();
+            // Получаем ISwaggerProvider из основного DI контейнера и регистрируем его как инстанс
+            var swaggerProvider = _mainAppServiceProvider.GetRequiredService<ISwaggerProvider>();
+            builder.Services.AddSingleton(swaggerProvider);
         }
 
         var app = builder.Build();
