@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.AspNetCore.Hosting;
 using JustPlatform.Hosting.Metrics;
+using JustPlatform.Hosting.Swagger;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Routing;
 
@@ -84,7 +85,11 @@ public static class ServiceCollectionExtensions
         if (options.EnableSwagger)
         {
             services.AddControllers();
-            services.AddSwaggerGen();
+            services.AddEndpointsApiExplorer();
+            services.AddSwaggerGen(c =>
+            {
+                c.DocumentFilter<ServersDocumentFilter>();
+            });
         }
 
         if (options.EnableSerilog)
