@@ -19,11 +19,7 @@ public static class ApplicationBuilderExtensions
         // Allow user to add custom middleware
         extensibilityOptions.ConfigurePipeline?.Invoke(app);
 
-        if (options.EnableSwagger && env.IsDevelopment())
-        {
-            app.UseSwagger();
-            app.UseSwaggerUI();
-        }
+        
 
         app.UseEndpoints(endpoints =>
         {

@@ -1,21 +1,19 @@
-using System;
 using JustPlatform.Hosting.Configuration;
+using JustPlatform.Hosting.HealthCheck;
+using JustPlatform.Hosting.Metrics;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
+using System.Reflection;
+using Microsoft.AspNetCore.Http;
 
 namespace JustPlatform.Hosting.DebugServer;
 
-public class DebugEndpointsHostedService : IHostedService
+public class DebugEndpointsHostedService(PlatformOptions _options) : IHostedService
 {
-    private readonly PlatformOptions _options;
     private WebApplication? _debugApp;
-
-    public DebugEndpointsHostedService(PlatformOptions options)
-    {
-        _options = options;
-    }
 
     public async Task StartAsync(CancellationToken ct)
     {
@@ -31,9 +29,42 @@ public class DebugEndpointsHostedService : IHostedService
 
         builder.WebHost.UseUrls($"http://localhost:{_options.Ports.DebugPort}");
 
+        // Регистрируем сервисы, необходимые для debug-портов
         builder.Services.AddSingleton(_options);
 
+        if (_options.EnableHealthChecks)
+        {
+            builder.Services.AddHealthChecks()
+                .AddCheck<LivenessCheck>("liveness", HealthStatus.Unhealthy, ["live"])
+                .AddCheck<ReadinessCheck>("readiness", HealthStatus.Unhealthy, ["ready"]);
+        }
+        
+        if (_options.EnableMetrics)
+        {
+            builder.Services.AddPlatformOpenTelemetry(_options);
+        }
+        
+        if (_options.EnableSwagger)
+        {
+            builder.Services.AddSwaggerGen();
+        }
+
         var app = builder.Build();
+
+        // Маппим эндпоинты
+        if (app.Environment.IsDevelopment())
+        {
+            app.MapGet("/", () => "Debug server is running!");
+        }
+
+        // Add /info endpoint
+        app.MapGet("/info", () =>
+        {
+            var assembly = Assembly.GetEntryAssembly();
+            var appName = assembly?.GetName().Name ?? "Unknown";
+            var appVersion = assembly?.GetName().Version?.ToString() ?? "Unknown";
+            return Results.Ok(new { ApplicationName = appName, Version = appVersion });
+        });
 
         if (_options.EnableHealthChecks)
         {
@@ -49,7 +80,7 @@ public class DebugEndpointsHostedService : IHostedService
 
         if (_options.EnableMetrics)
         {
-            app.MapPrometheusScrapingEndpoint(); // для /metrics
+            app.MapPrometheusScrapingEndpoint();
         }
 
         if (_options.EnableSwagger)

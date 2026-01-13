@@ -1,4 +1,3 @@
-using System;
 using Serilog;
 
 namespace JustPlatform.Hosting.Logging;
