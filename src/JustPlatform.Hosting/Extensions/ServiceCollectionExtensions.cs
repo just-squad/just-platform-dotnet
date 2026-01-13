@@ -1,4 +1,3 @@
-using System;
 using JustPlatform.Hosting.Configuration;
 using JustPlatform.Hosting.DebugServer;
 using JustPlatform.Hosting.HealthCheck;
@@ -22,7 +21,7 @@ public static class ServiceCollectionExtensions
         Action<IServiceCollection>? addServices = null,
         Action<IApplicationBuilder>? configurePipeline = null,
         Action<IEndpointRouteBuilder>? configureEndpoints = null
-        )
+    )
     {
         // 1. Resolve options
         var options = new PlatformOptions();
@@ -31,20 +30,17 @@ public static class ServiceCollectionExtensions
         {
             options = optionsFromCfg;
         }
+
         configureOptions?.Invoke(options);
 
         // 2. Configure Kestrel
         builder.WebHost.ConfigureKestrel(kestrelOptions =>
         {
-            kestrelOptions.ListenAnyIP(options.Ports.HttpPort, listenOptions =>
-            {
-                listenOptions.Protocols = HttpProtocols.Http1AndHttp2;
-            });
+            kestrelOptions.ListenAnyIP(options.Ports.HttpPort,
+                listenOptions => { listenOptions.Protocols = HttpProtocols.Http1AndHttp2; });
 
-            kestrelOptions.ListenAnyIP(options.Ports.GrpcPort, listenOptions =>
-            {
-                listenOptions.Protocols = HttpProtocols.Http2;
-            });
+            kestrelOptions.ListenAnyIP(options.Ports.GrpcPort,
+                listenOptions => { listenOptions.Protocols = HttpProtocols.Http2; });
         });
 
         // 3. Add platform services
@@ -65,7 +61,9 @@ public static class ServiceCollectionExtensions
         return builder;
     }
 
-    public static IServiceCollection AddJustPlatform(this IServiceCollection services, IConfiguration configuration, PlatformOptions options)
+    public static IServiceCollection AddJustPlatform(this IServiceCollection services,
+        IConfiguration configuration,
+        PlatformOptions options)
     {
         // Register options for middleware to use
         services.AddSingleton(options);
@@ -79,8 +77,8 @@ public static class ServiceCollectionExtensions
         if (options.EnableHealthChecks)
         {
             services.AddHealthChecks()
-                    .AddCheck<LivenessCheck>("liveness", HealthStatus.Degraded, new[] { "live" })
-                    .AddCheck<ReadinessCheck>("readiness", HealthStatus.Degraded, new[] { "ready" });
+                .AddCheck<LivenessCheck>("liveness", HealthStatus.Degraded, ["live"])
+                .AddCheck<ReadinessCheck>("readiness", HealthStatus.Degraded, ["ready"]);
         }
 
         if (options.EnableSwagger)

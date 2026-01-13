@@ -8,7 +8,9 @@ namespace JustPlatform.Hosting.Metrics;
 
 public static class OpenTelemetryConfiguration
 {
-    public static IServiceCollection AddPlatformOpenTelemetry(this IServiceCollection services, PlatformOptions options)
+    public static IServiceCollection AddPlatformOpenTelemetry(
+        this IServiceCollection services,
+        PlatformOptions options)
     {
         services.AddOpenTelemetry()
             .WithMetrics(builder =>

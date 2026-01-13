@@ -1,4 +1,3 @@
-using System;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 namespace JustPlatform.Hosting.HealthCheck;

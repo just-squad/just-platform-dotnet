@@ -1,5 +1,3 @@
-using System;
-
 namespace JustPlatform.Configuration.Models;
 
 public interface IHasVaultData
