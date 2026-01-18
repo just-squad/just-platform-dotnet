@@ -28,9 +28,19 @@ public class PlatformOptions
     public PlatformVaultOptions Vault { get; set; } = new();
 
     /// <summary>
+    /// Cors
+    /// </summary>
+    public PlatformCorsOptions Cors { get; set; } = new();
+
+    /// <summary>
     /// Override configurations
     /// </summary>
     public Dictionary<string, string?>? OverrideConfiguration { get; set; } = new();
+}
+
+public class PlatformCorsOptions
+{
+    public string PolicyName { get; set; } = "DefaultCorsPolicy";
 }
 
 public class PlatformPortsOptions

@@ -123,10 +123,19 @@ dotnet_naming_rule.public_members_must_be_capitalized.severity = warning
 dotnet_naming_rule.public_members_must_be_capitalized.symbols = public_members
 dotnet_naming_rule.public_members_must_be_capitalized.style = capitalized_style
 
-# Private members
-dotnet_naming_rule.private_members_must_be_underscore_prefixed.severity = suggestion
-dotnet_naming_rule.private_members_must_be_underscore_prefixed.symbols = private_members
-dotnet_naming_rule.private_members_must_be_underscore_prefixed.style = underscore_prefixed_style
+# Private instance fields with underscore
+dotnet_naming_rule.private_fields_should_be_underscore_camel_case.severity = suggestion
+dotnet_naming_rule.private_fields_should_be_underscore_camel_case.symbols = private_fields
+dotnet_naming_rule.private_fields_should_be_underscore_camel_case.style = underscore_camel_case
+
+# Symbol group for private fields
+dotnet_naming_symbols.private_fields.applicable_kinds = field
+dotnet_naming_symbols.private_fields.applicable_accessibilities = private
+
+# Naming style definition
+dotnet_naming_style.underscore_camel_case.capitalization = camel_case
+dotnet_naming_style.underscore_camel_case.required_prefix = _
+dotnet_naming_style.underscore_camel_case.required_suffix =
 
 # Symbols
 dotnet_naming_symbols.public_members.applicable_kinds = method, property, event, field, enum_member, constant, readonly_field

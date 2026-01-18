@@ -14,6 +14,11 @@ public static class ApplicationBuilderExtensions
         var extensibilityOptions = app.ApplicationServices.GetRequiredService<JustPlatformExtensibilityOptions>();
         var env = app.ApplicationServices.GetRequiredService<IWebHostEnvironment>();
 
+        if (options.EnableSwagger)
+        {
+            app.UseCors(options.Cors.PolicyName);
+        }
+
         app.UseRouting();
         
         // Allow user to add custom middleware

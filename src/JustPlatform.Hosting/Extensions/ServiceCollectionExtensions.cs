@@ -1,3 +1,4 @@
+using System.Text.Json.Nodes;
 using JustPlatform.Hosting.Configuration;
 using JustPlatform.Hosting.DebugServer;
 using JustPlatform.Hosting.HealthCheck;
@@ -12,6 +13,7 @@ using JustPlatform.Hosting.Metrics;
 using JustPlatform.Hosting.Swagger;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Routing;
+using Microsoft.OpenApi;
 
 namespace JustPlatform.Hosting.Extensions;
 
@@ -84,11 +86,33 @@ public static class ServiceCollectionExtensions
 
         if (options.EnableSwagger)
         {
+            services.AddCors(corsOptions =>
+            {
+                corsOptions.AddPolicy(options.Cors.PolicyName, policyBuilder =>
+                {
+                    policyBuilder
+                        .AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
             services.AddControllers();
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen(c =>
             {
                 c.DocumentFilter<ServersDocumentFilter>();
+                c.MapType<TimeSpan>(() => new OpenApiSchema
+                {
+                    Type = JsonSchemaType.String,
+                    Example = JsonValue.Create("0.00:00:00"),
+                    Format = "dd:HH:mm:ss"
+                });
+                c.MapType<TimeSpan?>(() => new OpenApiSchema
+                {
+                    Type = JsonSchemaType.String,
+                    Example = JsonValue.Create("0.00:00:00"),
+                    Format = "dd:HH:mm:ss",
+                });
             });
         }
 
