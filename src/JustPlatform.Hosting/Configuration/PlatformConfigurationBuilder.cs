@@ -14,6 +14,7 @@ public static class PlatformConfigurationBuilder
         // 2. appsettings.{Environment}.json
         var env = environmentName ?? Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
         builder.AddJsonFile($"appsettings.{env}.json", optional: true, reloadOnChange: true);
+        builder.AddJsonFile($"appsettings.{env}.local.json", optional: true, reloadOnChange: true);
 
         // 4. Environment Variables
         builder.AddEnvironmentVariables();

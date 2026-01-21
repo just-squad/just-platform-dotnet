@@ -23,9 +23,7 @@ public static class ApplicationBuilderExtensions
         
         // Allow user to add custom middleware
         extensibilityOptions.ConfigurePipeline?.Invoke(app);
-
         
-
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
