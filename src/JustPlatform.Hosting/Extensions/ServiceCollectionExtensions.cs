@@ -101,6 +101,8 @@ public static class ServiceCollectionExtensions
             services.AddSwaggerGen(c =>
             {
                 c.DocumentFilter<ServersDocumentFilter>();
+                c.CustomSchemaIds(x => x.FullName?.Replace("+", ".", StringComparison.Ordinal));
+
                 c.MapType<TimeSpan>(() => new OpenApiSchema
                 {
                     Type = JsonSchemaType.String,
