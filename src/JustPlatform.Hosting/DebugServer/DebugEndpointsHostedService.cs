@@ -12,14 +12,14 @@ using Swashbuckle.AspNetCore.Swagger;
 
 namespace JustPlatform.Hosting.DebugServer;
 
-public class DebugEndpointsHostedService(PlatformOptions _options, IServiceProvider _mainAppServiceProvider)
+public class DebugEndpointsHostedService(PlatformOptions options, IServiceProvider mainAppServiceProvider)
     : IHostedService
 {
     private WebApplication? _debugApp;
 
     public async Task StartAsync(CancellationToken ct)
     {
-        if (_options.Ports.HttpPort == _options.Ports.DebugPort)
+        if (options.Ports.HttpPort == options.Ports.DebugPort)
         {
             throw new InvalidOperationException("Main port and debug port cannot be the same.");
         }
@@ -29,27 +29,27 @@ public class DebugEndpointsHostedService(PlatformOptions _options, IServiceProvi
             EnvironmentName = Environments.Production // или Development
         });
 
-        builder.WebHost.UseUrls($"http://localhost:{_options.Ports.DebugPort}");
+        builder.WebHost.UseUrls($"http://localhost:{options.Ports.DebugPort}");
 
         // Регистрируем сервисы, необходимые для debug-портов
-        builder.Services.AddSingleton(_options);
+        builder.Services.AddSingleton(options);
 
-        if (_options.EnableHealthChecks)
+        if (options.EnableHealthChecks)
         {
             builder.Services.AddHealthChecks()
                 .AddCheck<LivenessCheck>("liveness", HealthStatus.Unhealthy, ["live"])
                 .AddCheck<ReadinessCheck>("readiness", HealthStatus.Unhealthy, ["ready"]);
         }
         
-        if (_options.EnableMetrics)
+        if (options.EnableMetrics)
         {
-            builder.Services.AddPlatformOpenTelemetry(_options);
+            builder.Services.AddPlatformOpenTelemetry(options);
         }
         
-        if (_options.EnableSwagger)
+        if (options.EnableSwagger)
         {
             // Получаем ISwaggerProvider из основного DI контейнера и регистрируем его как инстанс
-            var swaggerProvider = _mainAppServiceProvider.GetRequiredService<ISwaggerProvider>();
+            var swaggerProvider = mainAppServiceProvider.GetRequiredService<ISwaggerProvider>();
             builder.Services.AddSingleton(swaggerProvider);
         }
 
@@ -70,7 +70,7 @@ public class DebugEndpointsHostedService(PlatformOptions _options, IServiceProvi
             return Results.Ok(new { ApplicationName = appName, Version = appVersion });
         });
 
-        if (_options.EnableHealthChecks)
+        if (options.EnableHealthChecks)
         {
             app.MapHealthChecks("/healthz", new Microsoft.AspNetCore.Diagnostics.HealthChecks.HealthCheckOptions
             {
@@ -82,12 +82,12 @@ public class DebugEndpointsHostedService(PlatformOptions _options, IServiceProvi
             });
         }
 
-        if (_options.EnableMetrics)
+        if (options.EnableMetrics)
         {
             app.MapPrometheusScrapingEndpoint();
         }
 
-        if (_options.EnableSwagger)
+        if (options.EnableSwagger)
         {
             app.UseSwagger();
             app.UseSwaggerUI();
