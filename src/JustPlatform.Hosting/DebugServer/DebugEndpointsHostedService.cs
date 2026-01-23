@@ -40,14 +40,24 @@ public class DebugEndpointsHostedService(PlatformOptions options, IServiceProvid
                 .AddCheck<LivenessCheck>("liveness", HealthStatus.Unhealthy, ["live"])
                 .AddCheck<ReadinessCheck>("readiness", HealthStatus.Unhealthy, ["ready"]);
         }
-        
+
         if (options.EnableMetrics)
         {
             builder.Services.AddPlatformOpenTelemetry(options);
         }
-        
+
         if (options.EnableSwagger)
         {
+            builder.Services.AddCors(corsOptions =>
+            {
+                corsOptions.AddPolicy(options.Cors.PolicyName, policyBuilder =>
+                {
+                    policyBuilder
+                        .AllowAnyOrigin()
+                        .AllowAnyHeader()
+                        .AllowAnyMethod();
+                });
+            });
             // Получаем ISwaggerProvider из основного DI контейнера и регистрируем его как инстанс
             var swaggerProvider = mainAppServiceProvider.GetRequiredService<ISwaggerProvider>();
             builder.Services.AddSingleton(swaggerProvider);
@@ -89,6 +99,7 @@ public class DebugEndpointsHostedService(PlatformOptions options, IServiceProvid
 
         if (options.EnableSwagger)
         {
+            app.UseCors(options.Cors.PolicyName);
             app.UseSwagger();
             app.UseSwaggerUI();
         }

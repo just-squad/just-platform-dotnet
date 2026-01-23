@@ -9,15 +9,15 @@ namespace JustPlatform.Hosting.Swagger;
 /// This ensures that the Swagger UI sends API requests to the correct application port,
 /// even when the UI is served from a different debug port.
 /// </summary>
-public class ServersDocumentFilter(PlatformOptions _options) : IDocumentFilter
+public class ServersDocumentFilter(PlatformOptions options) : IDocumentFilter
 {
     public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
     {
-        var url = $"http://localhost:{_options.Ports.HttpPort}";
+        var url = $"http://localhost:{options.Ports.HttpPort}";
 
-        if (!string.IsNullOrEmpty(_options.PublicUrl))
+        if (!string.IsNullOrEmpty(options.PublicUrl))
         {
-            url = $"{_options.PublicUrl}:{_options.Ports.HttpPort}";
+            url = $"{options.PublicUrl}:{options.Ports.HttpPort}";
             if (!url.StartsWith("http://") && !url.StartsWith("https://"))
             {
                 url = $"http://{url}";
