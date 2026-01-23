@@ -11,11 +11,22 @@ namespace JustPlatform.Hosting.Swagger;
 /// </summary>
 public class ServersDocumentFilter(PlatformOptions _options) : IDocumentFilter
 {
-    public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context) =>
+    public void Apply(OpenApiDocument swaggerDoc, DocumentFilterContext context)
+    {
+        var url = $"http://localhost:{_options.Ports.HttpPort}";
+
+        if (!string.IsNullOrEmpty(_options.PublicUrl))
+        {
+            url = $"{_options.PublicUrl}:{_options.Ports.HttpPort}";
+            if (!url.StartsWith("http://") && !url.StartsWith("https://"))
+            {
+                url = $"http://{url}";
+            }
+        }
+
         swaggerDoc.Servers = new List<OpenApiServer>
         {
-            // Assuming the main server is running on localhost.
-            // This could be made more robust with configuration from IServer.
-            new() { Url = $"http://localhost:{_options.Ports.HttpPort}" }
+            new() { Url = url }
         };
+    }
 }

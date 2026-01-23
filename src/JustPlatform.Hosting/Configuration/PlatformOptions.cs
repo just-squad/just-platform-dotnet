@@ -16,6 +16,7 @@ public class PlatformOptions
     public bool EnableMetrics { get; set; } = true;
     public bool EnableSerilog { get; set; } = true;
     public bool EnableSwagger { get; set; } = false;
+    public string? PublicUrl { get; set; }
 
     /// <summary>
     /// Connection ports
