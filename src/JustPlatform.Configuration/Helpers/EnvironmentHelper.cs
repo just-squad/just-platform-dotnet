@@ -6,20 +6,51 @@ public static class EnvironmentHelper
     /// Получение значение http порта для сервиса из переменных окружения.
     /// </summary>
     /// <returns>Значение http порта или null</returns>
-    public static string? GetHttpPortEvnVariable() =>
-        Environment.GetEnvironmentVariable(Constants.Environment.HttpPortEvnName);
+    public static int? GetHttpPortEvnVariable()
+    {
+        var port = Environment.GetEnvironmentVariable(Constants.Environment.HttpPortEvnName);
+        if (int.TryParse(port, out var portInt))
+        {
+            return portInt;
+        }
+
+        return null;
+    }
 
     /// <summary>
     /// Получение значение grpc порта для сервиса из переменных окружения.
     /// </summary>
     /// <returns>Значение grpc порта или null</returns>
-    public static string? GetGrpcPortEvnVariable() =>
-        Environment.GetEnvironmentVariable(Constants.Environment.GrpcPortEvnName);
+    public static int? GetGrpcPortEvnVariable()
+    {
+        var port = Environment.GetEnvironmentVariable(Constants.Environment.GrpcPortEvnName);
+        if (int.TryParse(port, out var portInt))
+        {
+            return portInt;
+        }
+
+        return null;
+    }
 
     /// <summary>
     /// Получение значение debug порта для сервиса из переменных окружения.
     /// </summary>
     /// <returns>Значение debug порта или null</returns>
-    public static string? GetDebugPortEvnVariable() =>
-        Environment.GetEnvironmentVariable(Constants.Environment.DebugPortEvnName);
+    public static int? GetDebugPortEvnVariable()
+    {
+        var port = Environment.GetEnvironmentVariable(Constants.Environment.DebugPortEvnName);
+        if (int.TryParse(port, out var portInt))
+        {
+            return portInt;
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// Получение значение debug хоста для сервиса из переменных окружения.
+    /// </summary>
+    /// <returns>Значение debug порта или null</returns>
+    public static string? GetDebugHostEvnVariable() =>
+        Environment.GetEnvironmentVariable(Constants.Environment.DebugHostEvnName);
 }

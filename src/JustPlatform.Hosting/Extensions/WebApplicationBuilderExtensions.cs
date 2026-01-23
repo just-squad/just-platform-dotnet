@@ -28,7 +28,9 @@ public static class WebApplicationBuilderExtensions
         {
             options = optionsFromCfg;
         }
+
         options = ApplyPortsFromEnvironment(options);
+        options = ApplyHostsFromEnvironment(options);
         configureOptions?.Invoke(options);
 
         // 2. Configure Kestrel
@@ -62,27 +64,32 @@ public static class WebApplicationBuilderExtensions
             var httpPort = EnvironmentHelper.GetHttpPortEvnVariable();
             if (httpPort is not null)
             {
-                if(int.TryParse(httpPort, out var httpPortInt))
-                {
-                    source.Ports.HttpPort = httpPortInt;
-                }
+                source.Ports.HttpPort = httpPort.Value;
             }
+
             var grpcPort = EnvironmentHelper.GetGrpcPortEvnVariable();
             if (grpcPort is not null)
             {
-                if(int.TryParse(grpcPort, out var grpcPortInt))
-                {
-                    source.Ports.GrpcPort = grpcPortInt;
-                }
+                source.Ports.GrpcPort = grpcPort.Value;
             }
+
             var debugPort = EnvironmentHelper.GetDebugPortEvnVariable();
             if (debugPort is not null)
             {
-                if(int.TryParse(debugPort, out var debugPortInt))
-                {
-                    source.Ports.DebugPort = debugPortInt;
-                }
+                source.Ports.DebugPort = debugPort.Value;
             }
+
+            return source;
+        }
+        
+        PlatformOptions ApplyHostsFromEnvironment(PlatformOptions source)
+        {
+            var debugPort = EnvironmentHelper.GetDebugHostEvnVariable();
+            if (debugPort is not null)
+            {
+                source.Ports.DebugHost = debugPort;
+            }
+
             return source;
         }
     }
