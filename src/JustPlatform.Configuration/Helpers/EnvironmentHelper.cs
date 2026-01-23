@@ -50,7 +50,14 @@ public static class EnvironmentHelper
     /// <summary>
     /// Получение значение debug хоста для сервиса из переменных окружения.
     /// </summary>
-    /// <returns>Значение debug порта или null</returns>
+    /// <returns>Значение debug хоста или null</returns>
     public static string? GetDebugHostEvnVariable() =>
         Environment.GetEnvironmentVariable(Constants.Environment.DebugHostEvnName);
+    
+    /// <summary>
+    /// Получение значение публичного хоста для сервиса из переменных окружения.
+    /// </summary>
+    /// <returns>Значение публичного хоста</returns>
+    public static string? GetPublicUrlEvnVariable() =>
+        Environment.GetEnvironmentVariable(Constants.Environment.PublicUrlEvnName);
 }
