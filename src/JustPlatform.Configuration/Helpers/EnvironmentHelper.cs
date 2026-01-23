@@ -9,12 +9,9 @@ public static class EnvironmentHelper
     public static int? GetHttpPortEvnVariable()
     {
         var port = Environment.GetEnvironmentVariable(Constants.Environment.HttpPortEvnName);
-        if (int.TryParse(port, out var portInt))
-        {
-            return portInt;
-        }
-
-        return null;
+        return int.TryParse(port, out var portInt)
+            ? portInt
+            : null;
     }
 
     /// <summary>
@@ -24,12 +21,9 @@ public static class EnvironmentHelper
     public static int? GetGrpcPortEvnVariable()
     {
         var port = Environment.GetEnvironmentVariable(Constants.Environment.GrpcPortEvnName);
-        if (int.TryParse(port, out var portInt))
-        {
-            return portInt;
-        }
-
-        return null;
+        return int.TryParse(port, out var portInt)
+            ? portInt
+            : null;
     }
 
     /// <summary>
@@ -39,12 +33,9 @@ public static class EnvironmentHelper
     public static int? GetDebugPortEvnVariable()
     {
         var port = Environment.GetEnvironmentVariable(Constants.Environment.DebugPortEvnName);
-        if (int.TryParse(port, out var portInt))
-        {
-            return portInt;
-        }
-
-        return null;
+        return int.TryParse(port, out var portInt)
+            ? portInt
+            : null;
     }
 
     /// <summary>
@@ -53,7 +44,7 @@ public static class EnvironmentHelper
     /// <returns>Значение debug хоста или null</returns>
     public static string? GetDebugHostEvnVariable() =>
         Environment.GetEnvironmentVariable(Constants.Environment.DebugHostEvnName);
-    
+
     /// <summary>
     /// Получение значение публичного хоста для сервиса из переменных окружения.
     /// </summary>
