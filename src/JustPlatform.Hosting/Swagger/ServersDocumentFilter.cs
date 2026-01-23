@@ -17,7 +17,7 @@ public class ServersDocumentFilter(PlatformOptions _options) : IDocumentFilter
 
         if (!string.IsNullOrEmpty(_options.PublicUrl))
         {
-            url = _options.PublicUrl;
+            url = $"{_options.PublicUrl}:{_options.Ports.HttpPort}";
             if (!url.StartsWith("http://") && !url.StartsWith("https://"))
             {
                 url = $"http://{url}";
