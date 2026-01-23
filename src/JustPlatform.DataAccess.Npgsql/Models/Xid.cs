@@ -12,7 +12,7 @@ public readonly struct Xid(uint value) : IEquatable<Xid>
     public override bool Equals(object? obj) => obj is Xid other && Equals(other);
 
     public override int GetHashCode() => (int)Value;
-    
+
     public static bool operator ==(Xid left, Xid right) => left.Equals(right);
 
     public static bool operator !=(Xid left, Xid right) => !(left == right);

@@ -81,7 +81,7 @@ public static class WebApplicationBuilderExtensions
 
             return source;
         }
-        
+
         PlatformOptions ApplyHostsFromEnvironment(PlatformOptions source)
         {
             var debugHost = EnvironmentHelper.GetDebugHostEvnVariable();
@@ -89,7 +89,7 @@ public static class WebApplicationBuilderExtensions
             {
                 source.Ports.DebugHost = debugHost;
             }
-            
+
             var publicUrl = EnvironmentHelper.GetPublicUrlEvnVariable();
             if (publicUrl is not null)
             {

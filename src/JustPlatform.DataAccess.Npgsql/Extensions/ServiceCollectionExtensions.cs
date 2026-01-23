@@ -11,10 +11,10 @@ public static class ServiceCollectionExtensions
     {
         SqlMapper.RemoveTypeMap(typeof(DateTime));
         SqlMapper.RemoveTypeMap(typeof(DateTime?));
-        
+
         SqlMapper.AddTypeHandler(typeof(DateTime?), new DateTimeTypeHandler());
         SqlMapper.AddTypeHandler(typeof(Xid), new XidTypeHandler());
-        
+
         return services;
     }
 }

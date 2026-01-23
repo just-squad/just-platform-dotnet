@@ -23,14 +23,7 @@ public abstract class Entity<TId>
 
     public override bool Equals(object? obj)
     {
-        if (obj is not Entity<TId> item)
-        {
-            return false;
-        }
-
-        return ReferenceEquals(this, item)
-            ? true
-            : GetType() == item.GetType() && !item.IsTransient() && !IsTransient() && item.Id.Equals(Id);
+        return obj is Entity<TId> item && (ReferenceEquals(this, item) || GetType() == item.GetType() && !item.IsTransient() && !IsTransient() && item.Id.Equals(Id));
     }
 
     public override int GetHashCode()
