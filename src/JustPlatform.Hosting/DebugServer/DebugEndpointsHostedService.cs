@@ -29,7 +29,7 @@ public class DebugEndpointsHostedService(PlatformOptions options, IServiceProvid
             EnvironmentName = Environments.Production // или Development
         });
 
-        builder.WebHost.UseUrls($"http://localhost:{options.Ports.DebugPort}");
+        builder.WebHost.UseUrls($"http://{options.Ports.DebugHost}:{options.Ports.DebugPort}");
 
         // Регистрируем сервисы, необходимые для debug-портов
         builder.Services.AddSingleton(options);

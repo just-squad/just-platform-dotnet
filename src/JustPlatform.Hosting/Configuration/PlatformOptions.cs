@@ -48,4 +48,5 @@ public class PlatformPortsOptions
     public int HttpPort { get; set; } = 80;
     public int GrpcPort { get; set; } = 82;
     public int DebugPort { get; set; } = 84;
+    public string DebugHost { get; set; } = "localhost";
 }
