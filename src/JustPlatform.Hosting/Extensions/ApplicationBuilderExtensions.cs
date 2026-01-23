@@ -2,7 +2,6 @@ using JustPlatform.Hosting.Configuration;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace JustPlatform.Hosting.Extensions;
 
@@ -20,14 +19,14 @@ public static class ApplicationBuilderExtensions
         }
 
         app.UseRouting();
-        
+
         // Allow user to add custom middleware
         extensibilityOptions.ConfigurePipeline?.Invoke(app);
-        
+
         app.UseEndpoints(endpoints =>
         {
             endpoints.MapControllers();
-            
+
             // Allow user to add custom endpoints
             extensibilityOptions.ConfigureEndpoints?.Invoke(endpoints);
         });
