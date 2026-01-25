@@ -93,16 +93,49 @@ public static class ServiceCollectionExtensions
                 corsOptions.AddPolicy(PlatformCorsOptions.WellKnownPlatformCorsPolicies.DebugPortOrigins,
                     policyBuilder =>
                     {
+                        var allowedOrigins = new List<string>()
+                        {
+                            // local
+                            new UriBuilder()
+                            {
+                                Scheme = "http",
+                                Host = "localhost",
+                                Port = options.Ports.DebugPort
+                            }.ToString(),
+                            new UriBuilder()
+                            {
+                                Scheme = "https",
+                                Host = "localhost",
+                                Port = options.Ports.DebugPort
+                            }.ToString(),
+                            // debug host
+                            new UriBuilder()
+                            {
+                                Scheme = "http",
+                                Host = options.Ports.DebugHost,
+                                Port = options.Ports.DebugPort
+                            }.ToString(),
+                            new UriBuilder()
+                            {
+                                Scheme = "http",
+                                Host = options.Ports.DebugHost,
+                                Port = options.Ports.DebugPort
+                            }.ToString(),
+                        };
+                        if (!string.IsNullOrWhiteSpace(options.PublicUrl))
+                        {
+                            var uriBuilder = new UriBuilder(options.PublicUrl)
+                            {
+                                Scheme = "https",
+                                Port = options.Ports.HttpPort
+                            };
+                            allowedOrigins.Add(uriBuilder.ToString());
+                            uriBuilder.Scheme = "http";
+                            allowedOrigins.Add(uriBuilder.ToString());
+                        }
+
                         policyBuilder
-                            .WithOrigins($"http://localhost:{options.Ports.DebugPort}",
-                                $"https://localhost:{options.Ports.DebugPort}",
-                                $"http://{options.Ports.DebugHost}:{options.Ports.DebugPort}",
-                                $"https://{options.Ports.DebugHost}:{options.Ports.DebugPort}",
-                                // Если у тебя есть домен для порта 84
-                                $"https://{options.Ports.DebugHost}:84",
-                                // Http
-                                $"http://{options.PublicUrl}:{options.Ports.HttpPort}",
-                                $"https://{options.PublicUrl}:{options.Ports.HttpPort}")
+                            .WithOrigins(allowedOrigins.ToArray())
                             .AllowAnyHeader()
                             .AllowAnyMethod();
                     });
