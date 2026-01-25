@@ -1,5 +1,6 @@
 using System.Reflection;
 using JustPlatform.Hosting.Configuration;
+using JustPlatform.Hosting.Extensions;
 using JustPlatform.Hosting.HealthCheck;
 using JustPlatform.Hosting.Metrics;
 using Microsoft.AspNetCore.Builder;
@@ -48,16 +49,7 @@ public class DebugEndpointsHostedService(PlatformOptions options, IServiceProvid
 
         if (options.EnableSwagger)
         {
-            builder.Services.AddCors(corsOptions =>
-            {
-                corsOptions.AddPolicy(options.Cors.PolicyName, policyBuilder =>
-                {
-                    policyBuilder
-                        .AllowAnyOrigin()
-                        .AllowAnyHeader()
-                        .AllowAnyMethod();
-                });
-            });
+            builder.Services.AddPlatformCors(options);
             // Получаем ISwaggerProvider из основного DI контейнера и регистрируем его как инстанс
             var swaggerProvider = mainAppServiceProvider.GetRequiredService<ISwaggerProvider>();
             builder.Services.AddSingleton(swaggerProvider);

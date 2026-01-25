@@ -41,7 +41,17 @@ public class PlatformOptions
 
 public class PlatformCorsOptions
 {
-    public string PolicyName { get; set; } = "DefaultCorsPolicy";
+    /// <summary>
+    /// Название для политики CORS
+    /// </summary>
+    /// <remarks>Возможные варианты</remarks>
+    public string PolicyName { get; set; } = WellKnownPlatformCorsPolicies.AnyOrigins;
+
+    public static class WellKnownPlatformCorsPolicies
+    {
+        public const string AnyOrigins = "AnyOrigins";
+        public const string DebugPortOrigins = "DebugPortOrigins";
+    }
 }
 
 public class PlatformPortsOptions
