@@ -4,7 +4,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-        <Version>1.0.16</Version>
+        <Version>1.0.17</Version>
         <Authors>JustSquad</Authors>
         <Company>JustSquad</Company>
         <Copyright>Copyright © $(Company) $(Year)</Copyright>
